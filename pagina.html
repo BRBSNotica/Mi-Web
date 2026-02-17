@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Rodrigo BRS Servicios Informáticos</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      color: #e0e0e0;
+      background: #000;
+      overflow: hidden;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+    }
+
+    .overlay {
+      position: relative;
+      min-height: 100vh;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #00ff88;
+    }
+
+    header h1 {
+      font-size: 1.4rem;
+      color: #00ff88;
+    }
+
+    nav a {
+      margin-left: 15px;
+      text-decoration: none;
+      color: #e0e0e0;
+      font-weight: bold;
+      transition: color 0.2s;
+    }
+
+    nav a:hover {
+      color: #00ff88;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .card {
+      max-width: 500px;
+      width: 100%;
+      background: rgba(10, 10, 10, 0.9);
+      border: 1px solid #00ff88;
+      border-radius: 10px;
+      padding: 25px;
+      box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+    }
+
+    .card h2 {
+      margin-bottom: 15px;
+      color: #00ff88;
+    }
+
+    .card p {
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+
+    .label {
+      font-weight: bold;
+      color: #00ff88;
+    }
+
+    a.link {
+      color: #00ff88;
+      text-decoration: none;
+    }
+
+    a.link:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      text-align: center;
+      padding: 10px;
+      font-size: 0.8rem;
+      color: #777;
+      border-top: 1px solid #00ff88;
+      background: rgba(0, 0, 0, 0.8);
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="matrix"></canvas>
+
+  <div class="overlay">
+    <header>
+      <h1>Rodrigo BRS servicios informáticos</h1>
+      <nav>
+        <a href="#" onclick="showSection('servicios'); return false;">Servicios</a>
+        <a href="#" onclick="showSection('sobre-mi'); return false;">Sobre mí</a>
+      </nav>
+    </header>
+
+    <main>
+
+      <!-- NUEVA SECCIÓN SOLO SERVICIOS -->
+      <section id="servicios" class="card">
+        <h2>Mis servicios</h2>
+
+        <ul style="list-style:none; padding-left:0; margin-top:10px; line-height:1.6;">
+          <li>- Creación de USB de arranque: <span class="label">10€</span></li>
+          <li>- Soporte informático: <span class="label">30€</span></li>
+          <li>- Montar PC: <span class="label">40€</span></li>
+          <li>- Clases: <span class="label">60€</span></li>
+        </ul>
+      </section>
+
+      <!-- Sección sobre mí -->
+      <section id="sobre-mi" class="card hidden">
+        <h2>Sobre mí</h2>
+        <p>Joven informático friki que le gusta el anime,ayudar a las personas y los animales.</p>
+        <p><span class="label">Instagram:</span> <a class="link" href="https://instagram.com/r_thenewgate" target="_blank">@r_thenewgate</a></p>
+      </section>
+
+    </main>
+
+    <footer>
+      &copy; <span id="year"></span> Rodri – Servidor casero powered by XAMPP
+    </footer>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('matrix');
+    const ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    const fontSize = 16;
+    const columns = () => Math.floor(canvas.width / fontSize);
+    let drops = [];
+
+    function initDrops() {
+      drops = [];
+      for (let i = 0; i < columns(); i++) {
+        drops[i] = Math.floor(Math.random() * -20);
+      }
+    }
+    initDrops();
+    window.addEventListener('resize', initDrops);
+
+    function draw() {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = '#00ff88';
+      ctx.font = fontSize + 'px monospace';
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = Math.random() > 0.5 ? '0' : '1';
+        const x = i * fontSize;
+        const y = drops[i] * fontSize;
+
+        ctx.fillText(text, x, y);
+
+        if (y > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        } else {
+          drops[i]++;
+        }
+      }
+
+      requestAnimationFrame(draw);
+    }
+    draw();
+
+    function showSection(id) {
+      document.getElementById('servicios').classList.add('hidden');
+      document.getElementById('sobre-mi').classList.add('hidden');
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
